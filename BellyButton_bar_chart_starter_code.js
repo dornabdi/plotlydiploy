@@ -63,7 +63,7 @@ function buildCharts(sample) {
     // console.log(`Washing Freq: ${wfreq}`)
 
     // 3. Create a variable that holds the samples array. 
-    var samples = data.samples;
+    var samples: data.samples;
 
     // 4. Create a variable that filters the samples for the object with the desired sample number.
     var resultArrray = samples.filter(sampleObj => sampleObj.id == sample);
@@ -72,34 +72,27 @@ function buildCharts(sample) {
     var result = resultArrray[0];
 
     // 6. Create variables that hold the otu_ids, otu_labels, and sample_values.
-    console.log(data.samples[0].otu_ids);
-   
-    var otu_ids= data.samples[0].otu_ids;
-    var otu_labels= data.samples[0].otu_labels;
-    var sample_values= data.samples[0].sample_values;
+    var otu_ids: otu_ids;
+    var otu_labels: otu_labels;
+    var sample_values: sample_values;
 
     // 7. Create the yticks for the bar chart.
     // Hint: Get the the top 10 otu_ids and map them in descending order  
     //  so the otu_ids with the most bacteria are last. 
     
-    var sortedId = otu_ids.reverse();
-    // var sortedId = otu_ids.sort((a,b) => a.otu_ids - b.otu_ids).reverse();
-    var yticks = sortedId.slice(0,11);
-  
-    var topTen = sample_values.reverse().slice(0,11);
-    // var topTen = sample_values.sort((a,b) => a.sample_values - b.sample_values).reverse().slice(0,11);
-
+    var sortedId = slicedId.sort((a,b) => a.otu_ids - b.otu_ids).reverse();
+    var topTen = sortedId.slice(0,11);
     console.log(topTen);
- 
-    var labels = otu_labels.slice(0,11);
+    var yticks = topTen;
+
+    var labels = samples.otu_labels.slice(0,11);
 
     // 8. Create the trace for the bar chart. 
     var trace = {
       x: topTen,
-      y: yticks,
+      y: otu_ids,
       text: labels,
-      type: "bar",
-      orientation: 'h'
+      type: "bar"
     };
     var data = [trace];
     
@@ -109,7 +102,7 @@ function buildCharts(sample) {
      
     };
     // 10. Use Plotly to plot the data with the layout. 
-    Plotly.newPlot("bar-plot", data, barLayout);
+    Plotly.newPlot("bar-plot", data, layout);
 
   });
 }
