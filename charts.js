@@ -1,3 +1,5 @@
+var metadata = null;
+
 function init() {
   // Grab a reference to the dropdown select element
   var selector = d3.select("#selDataset");
@@ -5,6 +7,7 @@ function init() {
   // Use the list of sample names to populate the select options
   d3.json("samples.json").then((data) => {
     var sampleNames = data.names;
+    metadata = data.metadata;
 
     sampleNames.forEach((sample) => {
       selector
@@ -52,15 +55,12 @@ function buildMetadata(sample) {
 
   });
 }
-
+//Deliverable 1
 // 1. Create the buildCharts function.
 function buildCharts(sample) {
   // 2. Use d3.json to load and retrieve the samples.json file 
   d3.json("samples.json").then((data) => {
     console.log(data);
-
-    // var wfreq = data.metadata.map(d => d.wfreq)
-    // console.log(`Washing Freq: ${wfreq}`)
 
     // 3. Create a variable that holds the samples array. 
     var samples = data.samples;
@@ -108,15 +108,81 @@ function buildCharts(sample) {
     // 10. Use Plotly to plot the data with the layout. 
     Plotly.newPlot("bar-plot", data, barLayout);
 
-  });
+    //Deliverable 2: Bubble Chart
+    // 1. Create the trace for the bubble chart.
+    var bubbleData = [{
+        x: otu_ids,
+        y: sample_values,
+        text: otu_labels,
+        mode: 'markers',
+        marker: { 
+            size: sample_values,
+            color: otu_ids,
+            colorscale: 'Hot' 
+        }
+    }];
+
+    // 2. Create the layout for the bubble chart.
+    var bubbleLayout = {
+        title: {
+            text: "<b>Bacteria Cultures Per Sample</b>"},
+        
+        xaxis: {title: "OTU IDs"},
+        hovermode: "closest"
+    };
+
+    // 3. Use Plotly to plot the data with the layout.
+    Plotly.newPlot("bubble", bubbleData, bubbleLayout);
+  
+
+    //Deliverable 3: Gauge Chart
+    // 1. Create a variable that filters the metadata array for the object with the desired sample number.
+    // Create a variable that holds the samples array. 
+    var resultMetadata = data.filter(sampleObj => sampleObj.id == sample);
+
+    // 2. Create a variable that holds the first sample in the metadata array.
+    var firstMetadata = resultMetadata[0];
+
+
+    // 3. Create a variable that holds the washing frequency.
+    // var wfreq = parseFloat(resultMetadata.wfreq);
+    let wfreq = metadata.map(wash => wash.wfreq);
+
+    console.log(wfreq);
+
+
+    // var otu_labels= data.samples[0].otu_labels;
+
+
+    
+    // 4. Create the trace for the gauge chart.
+    var gaugeData = [{
+            value: wfreq,
+            type: "indicator",
+            mode: "gauge+number",
+            gauge: {
+                axis: { range: [null, 10], dtick : "2"},
+                bar: { color: "black"},
+                steps: [
+                    { range: [0, 2], color: "red" },
+                    { range: [2, 4], color: "orange" },
+                    { range: [4, 6], color: "gold" },
+                    { range: [6, 8], color: "limegreen" },
+                    { range: [8, 10], color: "darkgreen" },
+                  ]
+            }
+    }];
+
+    // 5. Create the layout for the gauge chart.
+    var gaugeLayout = { 
+        title: { 
+            text: "<b>Belly Button Washing Frequency</b><br> Scrubs per Week",
+            font: {color: "black"}
+        }
+        
+    };
+    
+      // 6. Use Plotly to plot the gauge data and layout.
+      Plotly.newPlot("gauge", gaugeData, gaugeLayout);
+    });
 }
-
-
-// sortedCities = cityGrowths.sort((a,b) => a.Increase_from_2016 - b.Increase_from_2016).reverse(); 
-// var topFiveCities = sortedCities.slice(0,5);
-
-// // Array of city names
-// var topFiveCityNames = topFiveCities.map(city => city.City);
-
-// //Array of corresponding population growths
-// var topFiveCityGrowths = topFiveCities.map(city => parseInt(city.Increase_from_2016));
