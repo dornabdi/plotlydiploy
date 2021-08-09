@@ -6,6 +6,8 @@ In this project, I visualized the bacterial data for each volunteer. Specificall
 ### Deliverable 1 
 I created a Horizontal Bar Chart to display the top 10 bacteria cultures found. 
  ![d1] (/images/d1.png)
+ ![d1](/images/d1.png)
+
 
 ## Deliverable 2 
 Created a Bubble Chart to visualize the number of cultures found per sample. 
